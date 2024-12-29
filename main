@@ -1,0 +1,53 @@
+// Chicken Shooter Game Script
+using UnityEngine;
+using UnityEngine.UI;
+
+public class ChickenShooter : MonoBehaviour
+{
+    public GameObject chickenPrefab; // Prefab ayam
+    public Text scoreText;           // Text UI untuk skor
+    public float spawnInterval = 2f; // Interval munculnya ayam (detik)
+
+    private int score = 0;
+
+    void Start()
+    {
+        // Mulai spawn ayam secara berkala
+        InvokeRepeating("SpawnChicken", 1f, spawnInterval);
+        UpdateScoreText();
+    }
+
+    void SpawnChicken()
+    {
+        // Posisi ayam muncul secara acak di layar
+        float randomX = Random.Range(-7f, 7f);
+        float randomY = Random.Range(-4f, 4f);
+        Vector3 spawnPosition = new Vector3(randomX, randomY, 0);
+
+        // Buat ayam dari prefab
+        Instantiate(chickenPrefab, spawnPosition, Quaternion.identity);
+    }
+
+    void UpdateScoreText()
+    {
+        scoreText.text = "Score: " + score;
+    }
+
+    public void OnChickenHit()
+    {
+        // Tambah skor saat ayam ditembak
+        score++;
+        UpdateScoreText();
+    }
+}
+
+// Script untuk ayam
+public class Chicken : MonoBehaviour
+{
+    void OnMouseDown()
+    {
+        // Hapus ayam jika ditekan
+        FindObjectOfType<ChickenShooter>().OnChickenHit();
+        Destroy(gameObject);
+    }
+}
